@@ -3,17 +3,17 @@ html, body, main {
     height: 100%;
 }
 
-body {
+#cat-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
 }
 
-#cat, #click-total{
-    width: 75%;
+#cat1, #cat2{
+    width: 40%;
     margin: 0 auto;
 }
 
-#cat-photo {
+#cat-photo1, #cat-photo2 {
     max-width: 100%;
     height: auto;
 }
