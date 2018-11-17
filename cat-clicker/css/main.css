@@ -37,8 +37,12 @@ body {
 
 #cat-list {
     width: 30%;
+}
+
+.cat-list {
     list-style-type: none;
 }
+
 #cat-list li {
     margin: 10px;
 }

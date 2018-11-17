@@ -1,63 +1,118 @@
 
-let numClicks = 0;
-let $list = document.querySelector("#cat-list");
-//let $catFragment = document.createDocumentFragment();
+let model = {
+    cats: [
+        {name: "dora", path: "../images/dora.jpg", clicks: 0},
+        {name: "nora", path: "../images/nora.jpg", clicks: 0},
+        {name: "flora", path: "../images/flora.jpg", clicks: 0},
+        {name: "cora", path: "../images/cora.jpg", clicks: 0},
+        {name: "james", path: "../images/james.jpg", clicks: 0}
+    ],
 
-let $catName = document.querySelector("#name");
-let $totalCatClicks = document.querySelector("p");
-let $mainPanel = document.querySelector("#main");
+    getCats: function(){
+        return this.cats;
+    }
+};
 
-// class Cat {
-//     constructor(name){
-//         this.name = name;
-//         this.numClicks = 0;
-//     }
+// function CatMenuView(selector) {
+//     this.el = document.querySelector(selector);
 // }
+// CatMenuView.prototype.render = function(cats) {
 
-let cats = [
-    {name: "dora", path: "../images/dora.jpg", clicks: 0},
-    {name: "nora", path: "../images/nora.jpg", clicks: 0},
-    {name: "flora", path: "../images/flora.jpg", clicks: 0},
-    {name: "cora", path: "../images/cora.jpg", clicks: 0},
-    {name: "james", path: "../images/james.jpg", clicks: 0}
-];
+// }
+// let catMenuView = new CatMenuView("#cat-list > ul");
 
-cats.forEach(function(cat){
-    let $anchor = document.createElement("a");
-    // let href = document.createAttribute("href");
-    // href.value = cat.path;
-    // anchorEl.setAttributeNode(href);
-    $anchor.setAttribute("href", "javascript:void(0)");
-    $anchor.text = cat.name;
+let catMenuView = {
+    $list: document.querySelector("#cat-list > ul"),
 
-    let $img = document.createElement("img");
-    $img.setAttribute("src", cat.path);
-    $img.className = "hidden";
-    $img.addEventListener("click", function(){
-        cat.clicks +=1;
-        $totalCatClicks.textContent = `This cat has been clicked ${cat.clicks} time(s)`;
-    });
+    render: function(cats){ //view does not talk to model, pass in cat, this willl need tobe called by octopus, only octopus call model, 
+        cats.forEach( cat => {
+            let $anchor = document.createElement("a");
+            let $li = document.createElement("li");
+            //$li.dataset.cat = cat;
+            $li.cat = cat;
 
-    $mainPanel.appendChild($img);   
+            $anchor.setAttribute("href", "javascript:void(0)");
+            $anchor.text = cat.name;
+            $li.appendChild($anchor);
 
-    let $li = document.createElement("li");
-    $li.appendChild($anchor);
-
-    $li.addEventListener("click", function(){
-        // $img.setAttribute("src", cat.path);
-        
-        $catName.textContent = cat.name;
-
-        //document.querySelectorAll("img").forEach
-        let images = Array.from(document.querySelectorAll("img")).forEach(function(image){
-            image.className = "hidden";
-            $totalCatClicks.textContent = `This cat has been clicked ${cat.clicks} time(s)`;
+            this.$list.appendChild($li);
         });
-        $img.classList = "";
+    },
 
-    });
+    getListItems: function(){
+        return Array.from(this.$list.querySelectorAll("li"));
+    }
+};
 
-    $list.appendChild($li);
+let catPanelView = {
+    $mainPanel: document.querySelector("#main"),
+    $catName: document.querySelector("#name"),
+    $totalCatClicks: document.querySelector("#main p"),
+
+    render: function(cats){
+        cats.forEach (cat => {
+            $img = document.createElement("img");
+            $img.setAttribute("src", cat.path);
+            $img.className = "hidden";
+            $img.cat = cat; //this is a reference to the cat (from the model)
+            //$img.dataset.cat = cat;
+
+            this.$mainPanel.appendChild($img); 
+        });
+        
+    },
+
+    getCatImages: function(){
+        return Array.from(this.$mainPanel.querySelectorAll("img"));
+    },
+
+    getImageByCat: function(cat) {
+        return this.getCatImages().filter($img => $img.cat === cat)[0];
+    }
+    
+}
+
+let controller = {
+    init: function(model, catMenuView, catPanelView){ //passing the model and view into the controller
+        this.catMenuView = catMenuView;
+        this.catPanelView = catPanelView;
+        this.model = model;
+
+        let cats = model.getCats();
+        catMenuView.render(cats);
+        catPanelView.render(cats);
+
+        this.bind();
+    }, 
+
+    bind: function(){
+
+        this.catPanelView.getCatImages().forEach( $img => {
+            $img.addEventListener("click", () => {
+                $img.cat.clicks +=1;
+                this.catPanelView.$totalCatClicks.textContent =
+                    `This cat has been clicked ${$img.cat.clicks} time(s)`;
+            });
+        });
 
 
-});
+        this.catMenuView.getListItems().forEach($li => {
+            $li.addEventListener("click", () => {
+                
+                this.catPanelView.$catName.textContent = $li.cat.name;
+        
+                this.catPanelView.getCatImages().forEach( $image => {
+                    $image.className = "hidden";
+                    console.log($li.cat);
+                    this.catPanelView.$totalCatClicks.textContent =
+                        `This cat has been clicked ${$li.cat.clicks} time(s)`;
+                });
+                let $img = this.catPanelView.getImageByCat($li.cat);
+                $img.classList = "";
+        
+            });
+        });
+    }
+}
+
+controller.init(model,catMenuView, catPanelView);
