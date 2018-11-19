@@ -7,10 +7,12 @@ let model = {
         {name: "cora", path: "../images/cora.jpg", clicks: 0},
         {name: "james", path: "../images/james.jpg", clicks: 0}
     ],
+    currentCat: {},
 
     getCats: function(){
         return this.cats;
     }
+
 };
 
 // function CatMenuView(selector) {
@@ -48,22 +50,18 @@ let catPanelView = {
     $mainPanel: document.querySelector("#main"),
     $catName: document.querySelector("#name"),
     $totalCatClicks: document.querySelector("#main p"),
+    $img: document.querySelector("img"),
 
-    render: function(cats){
-        cats.forEach (cat => {
-            $img = document.createElement("img");
-            $img.setAttribute("src", cat.path);
-            $img.className = "hidden";
-            $img.cat = cat; //this is a reference to the cat (from the model)
-            //$img.dataset.cat = cat;
-
-            this.$mainPanel.appendChild($img); 
-        });
+    render: function(cat){
+        this.$catName.textContent = cat.name;
+        this.$img.setAttribute("src", cat.path);
         
+        this.$totalCatClicks.textContent = `This cat has been clicked ${cat.clicks} time(s)`;
     },
 
-    getCatImages: function(){
-        return Array.from(this.$mainPanel.querySelectorAll("img"));
+    getCatImage: function(){
+        //return Array.from(this.$mainPanel.querySelectorAll("img"));
+        return this.$mainPanel.querySelector("img");
     },
 
     getImageByCat: function(cat) {
@@ -87,28 +85,18 @@ let controller = {
 
     bind: function(){
 
-        this.catPanelView.getCatImages().forEach( $img => {
-            $img.addEventListener("click", () => {
-                $img.cat.clicks +=1;
-                this.catPanelView.$totalCatClicks.textContent =
-                    `This cat has been clicked ${$img.cat.clicks} time(s)`;
-            });
+        this.catPanelView.getCatImage().addEventListener("click", () => {
+            this.model.currentCat.clicks += 1;
+            this.catPanelView.$totalCatClicks.textContent =
+                `This cat has been clicked ${this.model.currentCat.clicks} time(s)`;
         });
-
 
         this.catMenuView.getListItems().forEach($li => {
             $li.addEventListener("click", () => {
                 
-                this.catPanelView.$catName.textContent = $li.cat.name;
-        
-                this.catPanelView.getCatImages().forEach( $image => {
-                    $image.className = "hidden";
-                    console.log($li.cat);
-                    this.catPanelView.$totalCatClicks.textContent =
-                        `This cat has been clicked ${$li.cat.clicks} time(s)`;
-                });
-                let $img = this.catPanelView.getImageByCat($li.cat);
-                $img.classList = "";
+                let currentCat = this.model.currentCat = $li.cat;
+                
+                this.catPanelView.render(currentCat);
         
             });
         });
