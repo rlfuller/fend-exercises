@@ -78,7 +78,7 @@ let controller = {
 
         let cats = model.getCats();
         catMenuView.render(cats);
-
+        this.selectCat(cats[0]);
         this.bind();
     }, 
 
@@ -93,12 +93,14 @@ let controller = {
         this.catMenuView.getListItems().forEach($li => {
             $li.addEventListener("click", () => {
                 
-                let currentCat = this.model.currentCat = $li.cat;
-                
-                this.catPanelView.render(currentCat);
+                this.selectCat($li.cat);
         
             });
         });
+    }, 
+    selectCat: function(cat){
+        let currentCat = this.model.currentCat = cat;
+        this.catPanelView.render(currentCat);
     }
 }
 
