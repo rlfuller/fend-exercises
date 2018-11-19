@@ -78,7 +78,6 @@ let controller = {
 
         let cats = model.getCats();
         catMenuView.render(cats);
-        catPanelView.render(cats);
 
         this.bind();
     }, 
