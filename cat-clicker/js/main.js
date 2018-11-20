@@ -11,6 +11,13 @@ let model = {
 
     getCats: function(){
         return this.cats;
+    }, 
+
+    updateCat: function(cat){
+        console.log("tom *********", cat);
+        this.currentCat.name = cat.name;
+        this.currentCat.path = cat.path;
+        this.currentCat.clicks = cat.clicks;
     }
 
 };
@@ -22,6 +29,25 @@ let model = {
 
 // }
 // let catMenuView = new CatMenuView("#cat-list > ul");
+
+let adminView = {
+    $name: document.querySelector("#current-cat-name"),
+    $href: document.querySelector("#current-cat-href"),
+    $clicks: document.querySelector("#current-cat-clicks"),
+    
+    $save: document.querySelector("#save"),
+    $cancel: document.querySelector("#cancel"),
+    $form: document.querySelector("form"),
+    //$fd: new FormData(this.$form),
+
+    render: function(cat){
+        console.log(cat);
+        this.$name.value = cat.name;
+        this.$href.value = cat.path;
+        this.$clicks.value = cat.clicks;
+    }
+
+}
 
 let catMenuView = {
     $list: document.querySelector("#cat-list > ul"),
@@ -51,6 +77,7 @@ let catPanelView = {
     $catName: document.querySelector("#name"),
     $totalCatClicks: document.querySelector("#main p"),
     $img: document.querySelector("img"),
+    $adminBtn: document.querySelector(".admin-btn"),
 
     render: function(cat){
         this.$catName.textContent = cat.name;
@@ -71,14 +98,16 @@ let catPanelView = {
 }
 
 let controller = {
-    init: function(model, catMenuView, catPanelView){ //passing the model and view into the controller
+    init: function(model, catMenuView, catPanelView, adminView){ //passing the model and view into the controller
         this.catMenuView = catMenuView;
         this.catPanelView = catPanelView;
+        this.adminView = adminView;
         this.model = model;
 
         let cats = model.getCats();
         catMenuView.render(cats);
         this.selectCat(cats[0]);
+        //this.adminView.render(cats[0]);
         this.bind();
     }, 
 
@@ -97,6 +126,52 @@ let controller = {
         
             });
         });
+
+        this.catPanelView.$adminBtn.addEventListener("click", () => {
+            //show the admin view
+
+            //set the witht the current cat
+            //console.log("checkster", this.model.currentCat);
+            this.adminView.render(this.model.currentCat);
+            this.adminView.$form.classList.toggle("hidden");
+        });
+
+
+        this.adminView.$form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("huzzah");
+            //console.log("rachel", this.adminView.cat);
+            //this.model.updateCat(this.adminView.cat)
+            //let fd = new FormData(this.adminView.form).entries();
+            let fd = new FormData(this.adminView.$form);
+            // for (let x of fd.entries()){
+            //     console.log(x);
+            // }
+            console.log("ldjsl", fd.get("clicks"));
+            let clickz = parseInt(fd.get("clicks")) || 0;
+            this.model.updateCat(
+                {name:fd.get("cat-name"), path:fd.get("cat-href"), clicks: clickz}
+            );
+            this.adminView.$form.classList.toggle("hidden");
+            this.catPanelView.render(this.model.currentCat);
+        });
+
+        this.adminView.$save.addEventListener("save", () => {
+            //updte the model
+            console.log("rachel", this.adminView.cat);
+            this.model.updateCat(this.adminView.cat)
+            //hide the view
+            this.adminView.$form.classList.toggle("hidden");
+        });
+
+        this.adminView.$form.addEventListener("reset", () => {
+            //updte the model
+            //console.log("rachel", this.adminView.cat);
+            //this.model.updateCat(this.adminView.cat)
+            
+            //hide the view
+            this.adminView.$form.classList.toggle("hidden");
+        });
     }, 
     selectCat: function(cat){
         let currentCat = this.model.currentCat = cat;
@@ -104,4 +179,4 @@ let controller = {
     }
 }
 
-controller.init(model,catMenuView, catPanelView);
+controller.init(model,catMenuView, catPanelView, adminView);

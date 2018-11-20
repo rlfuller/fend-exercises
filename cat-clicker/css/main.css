@@ -75,3 +75,25 @@ a:link{
 a:hover {
     color: #4e8e19;
 }
+
+.admin-btn {
+    /* width: 50%; */
+    margin: 20px 0;
+    text-align: right;
+    flex-grow: 1;
+    display: block;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+
+#name {
+    /* /width: 50%; */
+    /* margin: 0 0; */
+}
+
+.title {
+    /* width: 100%; */
+    display: flex;
+    wrap: no-wrap;
+    /* justify-content: space-beteen; */
+}

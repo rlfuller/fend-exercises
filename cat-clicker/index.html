@@ -10,29 +10,6 @@
     
 </head>
 <body>
-    <!-- <h1>Click a Cat</h1>
-    <div id="cat-container">
-        <div id="cat1">
-            <h2 id="cat1name"></h2>
-            <div id="click-total-cat1">Click the image</div>
-            <div class="cat">
-                <figure>
-                    <image id="cat-photo1" src="./images/cat.jpg" alt="a noble cat"></image>
-                    <figcaption>Photo by Mikhail Vasilyev on Unsplash</figcaption>
-                </figure>
-            </div>
-        </div>
-        <div id="cat2">
-                <h2 id="cat2name"></h2>
-                <div id="click-total-cat2">Click the image</div>
-                <div class="cat">
-                    <figure>
-                        <image id="cat-photo2" src="./images/cat2.jpg" alt="another noble cat"></image>
-                        <figcaption>Photo by Callum Wale on Unsplash</figcaption>
-                    </figure>
-                </div>
-            </div> 
-    </div> -->
     <div id="container">
         <div id="cat-list">
             <h2>Select a cat</h2>
@@ -41,7 +18,10 @@
             </ul>
         </div>
         <div id="main">
-            <h2 id="name"></h2>
+            <div class="title">
+                <h2 id="name"></h2>
+                <a class="admin-btn" href="#">Admin</a>
+            </div>
             <p></p>
             <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
             pictures of cats go here
@@ -49,6 +29,25 @@
             clicks
             image
         </div>
+    </div>
+
+    <div id="admin-form">
+        <form class="form hidden">
+            <div class="input">
+                <label for="cat-name">Name</label>
+                <input type="text" id="current-cat-name" name="cat-name">
+                <label for="cat-href">Path</label>
+                <input type="text" id="current-cat-href" name="cat-href">
+                <label for="clicks">Num Clicks</label>
+                <input type="number" id="current-cat-clicks" name="clicks">
+            </div>
+            <div class="buttons">
+                <input type="reset" value="Cancel" id="cancel">
+                <input type="submit" value="Save" id="save">
+            </div>
+        </form>
+        
+
     </div>
     
     
