@@ -112,13 +112,14 @@ let controller = {
     }, 
 
     bind: function(){
-
+        //cat panel - adding event listenter to the cat image
         this.catPanelView.getCatImage().addEventListener("click", () => {
             this.model.currentCat.clicks += 1;
             this.catPanelView.$totalCatClicks.textContent =
                 `This cat has been clicked ${this.model.currentCat.clicks} time(s)`;
         });
 
+        //menu - each list item
         this.catMenuView.getListItems().forEach($li => {
             $li.addEventListener("click", () => {
                 
@@ -127,6 +128,7 @@ let controller = {
             });
         });
 
+        //admin button
         this.catPanelView.$adminBtn.addEventListener("click", () => {
             //show the admin view
 
@@ -136,7 +138,7 @@ let controller = {
             this.adminView.$form.classList.toggle("hidden");
         });
 
-
+        //save button
         this.adminView.$form.addEventListener("submit", (e) => {
             e.preventDefault();
             console.log("huzzah");
@@ -156,14 +158,7 @@ let controller = {
             this.catPanelView.render(this.model.currentCat);
         });
 
-        this.adminView.$save.addEventListener("save", () => {
-            //updte the model
-            console.log("rachel", this.adminView.cat);
-            this.model.updateCat(this.adminView.cat)
-            //hide the view
-            this.adminView.$form.classList.toggle("hidden");
-        });
-
+        //cancel button
         this.adminView.$form.addEventListener("reset", () => {
             //updte the model
             //console.log("rachel", this.adminView.cat);
